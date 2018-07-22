@@ -4,7 +4,7 @@ import main.java.ru.raiffeisen.cources.atm.ATM;
 import main.java.ru.raiffeisen.cources.atm.ScoreTypeEnum;
 import main.java.ru.raiffeisen.cources.atm.model.money.Money;
 import org.junit.jupiter.api.*;
-import tests.java.ru.raifeisen.cources.atm.data.AtmDataSupplier;
+import tests.java.ru.raifeisen.cources.atm.data.AtmDataSupplierCurrent;
 
 import java.util.Map;
 
@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 
 class ATMTestCurrentScore {
     private static ATM atm;
-    private static final AtmDataSupplier atmDataSupplier = new AtmDataSupplier();
+    private static final AtmDataSupplierCurrent atmDataSupplier = new AtmDataSupplierCurrent();
 
     private static final String DUMP_STR = "{\"currentScore\":{\"debetScore\":{\"creditScore\":{\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"debetScore\":{\"creditScore\":{\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"creditScore\":{\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"operLimit\":0,\"currentOpers\":0,\"operLimitToggl\":false}";
 
@@ -31,7 +31,7 @@ class ATMTestCurrentScore {
 
     @Test
     void addMoneyToCurrentScore() {  //проверка добавления средств на текущий счет
-        Map<Integer,Money> testData = atmDataSupplier.getTestDataForCurrent();
+        Map<Integer,Money> testData = atmDataSupplier.getTestDataForCurrentScore();
         Map<Integer,Money> expectedDataCurrent = atmDataSupplier.getExpectedDataForCurrent(atm);
         Map<Integer,Money> expectedDataDebet = atmDataSupplier.getExpectedDataForDebet(atm);
         for (Integer key :
@@ -65,7 +65,7 @@ class ATMTestCurrentScore {
 
     @AfterEach
     void cleanData() {
-        atmDataSupplier.fillATMcreditScore(atm);
+        atmDataSupplier.fillATMcurrentScore(atm);
     }
 
     @AfterAll
