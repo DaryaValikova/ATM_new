@@ -2,10 +2,11 @@ package tests.java.ru.raifeisen.cources.atm;
 
 import main.java.ru.raiffeisen.cources.atm.ATM;
 import main.java.ru.raiffeisen.cources.atm.ScoreTypeEnum;
-import main.java.ru.raiffeisen.cources.atm.model.db.DAO.AtmDAO;
 import main.java.ru.raiffeisen.cources.atm.model.money.Money;
 import org.junit.jupiter.api.*;
 import tests.java.ru.raifeisen.cources.atm.data.AtmDataSupplier;
+
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -24,34 +25,30 @@ class ATMTestCurrentScore {
 
     @BeforeEach
     void fillData() {
-        atmDataSupplier.fillATMcurrentScore(atm);//на счете 950р
+        atmDataSupplier.fillATMcurrentScore(atm);//на текущем счете 950р
     }
 
-//    @Test
-//    void addMoneyToCurrentScore() {
-//        System.out.println(atm.getCurrentScore().getBalance());
-//        System.out.println(atm.getDebetScore().getBalance());
-//        System.out.println(atm.getCreditScore().getBalance());
-//
-//        for (TestPair<Money> pair:
-//                atmDataSupplier.getTestListDataCurrentScore(atm)) {
-//            assertEquals(pair.getExpectedValue(), pair.getTestValue());
-//        }
-//    }
 
     @Test
-    void addMoneyToCurrentScore2() {
-        System.out.println(atm.getCurrentScore().getBalance());
-        System.out.println(atm.getDebetScore().getBalance());
-        System.out.println(atm.getCreditScore().getBalance());
+    void addMoneyToCurrentScore() {  //проверка добавления средств на текущий счет
+        Map<Integer,Money> testData = atmDataSupplier.getTestDataForCurrent();
+        Map<Integer,Money> expectedDataCurrent = atmDataSupplier.getExpectedDataForCurrent(atm);
+        Map<Integer,Money> expectedDataDebet = atmDataSupplier.getExpectedDataForDebet(atm);
+        for (Integer key :
+                testData.keySet()) {
+            Money tempMoney = testData.get(key);
+            atm.addMoneyToScore(tempMoney, ScoreTypeEnum.CURRENT); //добаляем на текущий счет сумму из testData
 
-        Money addMoney = new Money(100.39, "RUR");
-        atm.addMoneyToScore(addMoney, ScoreTypeEnum.CURRENT);
+            Money expectedCurrentMoney = expectedDataCurrent.get(key);
+            Money newCurrentMoney = atmDataSupplier.getMoneyFromCurrent(atm);
 
-        Money expectedMoney = new Money(950 + 100.39, "RUR");
+            Money expectedDebetMoney = expectedDataDebet.get(key);
+            Money newDebetMoney = atmDataSupplier.getMoneyFromDebet(atm);
 
-        assertEquals(expectedMoney, atm.getCurrentScore().getBalance());
-//        }
+            assertEquals(expectedCurrentMoney.getValue(), newCurrentMoney.getValue()); //сравниваем текущие счета
+            assertEquals(expectedDebetMoney.getValue(), newDebetMoney.getValue()); //сравниваем дебетовый счет после работы с текущим счетом
+            atmDataSupplier.fillATMcurrentScore(atm);
+        }
     }
 
 
@@ -63,17 +60,6 @@ class ATMTestCurrentScore {
         ATM newAtm = atm.getATMFromJSONString(stringBuilder);
 
         assertEquals(atm, newAtm);
-    }
-
-    @Test
-    void getAllScoresBalanceFromDB() {
-        AtmDAO atmDAO = mock(AtmDAO.class);
-        when(atmDAO.getAtm()).thenReturn(atmDataSupplier.getStartDataATM());
-        atm.setAtmDAO(atmDAO);
-
-        double actualSum = atm.getAllScoresBalanceFromDB();
-
-        assertEquals(0, actualSum);
     }
 
 

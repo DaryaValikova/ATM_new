@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 public class AtmDataSupplier {
-    public Map<String, Object> getStartData(){
+    public Map<String, Object> getStartData() {
         Map<String, Object> atmData = new HashMap<>();
 
         Money moneyCredit =
@@ -23,9 +23,9 @@ public class AtmDataSupplier {
                 new Money(0, "RUR");
         DebetScore debetScore =
                 new DebetScore(moneyDebet,
-                         null,
-                         2,
-                               creditScore);
+                        null,
+                        2,
+                        creditScore);
         atmData.put("debetScore", debetScore);
 
         Money moneyCurrent =
@@ -40,7 +40,7 @@ public class AtmDataSupplier {
         return atmData;
     }
 
-    public ATM getStartDataATM(){
+    public ATM getStartDataATM() {
         Money moneyCredit =
                 new Money(0, "RUR");
         CreditScore creditScore =
@@ -88,8 +88,8 @@ public class AtmDataSupplier {
         Money moneyDebet = new Money(300, "RUR");
         setMoneyToDebetScore(moneyDebet, atm, "debetScore");
 
-        Money moneyCredit = new Money(500, "RUR");
-        setMoneyToCreditScore(moneyCredit, atm, "creditScore");
+//        Money moneyCredit = new Money(20000, "RUR");
+//        setMoneyToCreditScore(moneyCredit, atm, "creditScore");
 
     }
 
@@ -156,7 +156,7 @@ public class AtmDataSupplier {
         }
     }
 
-    public Map<Integer, Money> getTestData(){
+    public Map<Integer, Money> getTestData() {
         Map<Integer, Money> testDataMap = new TreeMap<>();
 
         Money money1 = new Money(100, "RUR");
@@ -183,13 +183,13 @@ public class AtmDataSupplier {
         return testDataMap;
     }
 
-    public Map<Integer, Money> getExpectedData(ATM atm){
+    public Map<Integer, Money> getExpectedData(ATM atm) {
         Map<Integer, Money> expectedDataMap = new TreeMap<>();
         double usdCourse = atm
-                            .getCreditScore()
-                            .getMoneyWithoutLess()
-                            .getCurrency()
-                            .getUsdCource();
+                .getCreditScore()
+                .getMoneyWithoutLess()
+                .getCurrency()
+                .getUsdCource();
 
         Money money1 = new Money(1100, "RUR");
         expectedDataMap.put(1, money1);
@@ -197,9 +197,9 @@ public class AtmDataSupplier {
         expectedDataMap.put(2, money2);
         Money money3 = new Money(1000, "RUR"); //нельзя внести отрицательное значение
         expectedDataMap.put(3, money3);
-        Money money4 = new Money((1000+100*65.5), "RUR");
+        Money money4 = new Money((1000 + 100 * 65.5), "RUR");
         expectedDataMap.put(4, money4);
-        Money money5 = new Money((1000+0*65.5), "RUR");
+        Money money5 = new Money((1000 + 0 * 65.5), "RUR");
         expectedDataMap.put(5, money5);
         Money money6 = new Money(1000, "RUR"); //нельзя внести отрицательное значение
         expectedDataMap.put(6, money6);
@@ -215,59 +215,69 @@ public class AtmDataSupplier {
         return expectedDataMap;
     }
 
-    public Map<Integer, Money> getTestDataForCurrent(){
+    public Map<Integer, Money> getTestDataForCurrent() {
         Map<Integer, Money> testDataMap = new TreeMap<>();
 
         Money money1 = new Money(100.39, "RUR");
         testDataMap.put(1, money1);
         Money money2 = new Money(1000000, "RUR");
         testDataMap.put(2, money2);
-        Money money3 = new Money(1000000.01, "RUR");
+        Money money3 = new Money(1000001.01, "RUR");
         testDataMap.put(3, money3);
-//        Money money4 = new Money(100, "USD");
-//        testDataMap.put(4, money4);
-//        Money money5 = new Money(0, "USD");
-//        testDataMap.put(5, money5);
-//        Money money6 = new Money(-100, "USD");
-//        testDataMap.put(6, money6);
-//        Money money7 = new Money(1000000, "USD");
-//        testDataMap.put(7, money7);
-//        Money money8 = new Money(1000000, "RUR");
-//        testDataMap.put(8, money8);
-//        Money money9 = new Money(Double.MAX_VALUE, "USD");
-//        testDataMap.put(9, money9);
-//        Money money10 = new Money(Double.MAX_VALUE, "RUR");
-//        testDataMap.put(10, money10);
-
+        Money money4 = new Money(-0.01, "RUR");
+        testDataMap.put(4, money4);
         return testDataMap;
     }
 
-    public Map<Integer, Money> getExpectedDataForCurrent(ATM atm){
-        Map<Integer, Money> expectedDataMap = new TreeMap<>();
+    public Map<Integer, Money> getExpectedDataForCurrent(ATM atm) {
+        Map<Integer, Money> expectedDataCurrentMap = new TreeMap<>();
         double usdCourse = atm
                 .getCreditScore()
                 .getMoneyWithoutLess()
                 .getCurrency()
                 .getUsdCource();
 
-        Money money1 = new Money(950+100.39, "RUR");
-        expectedDataMap.put(1, money1);
-        Money money2 = new Money(950+1000000, "RUR");
-        expectedDataMap.put(2, money2);
-        Money money3 = new Money(950+1000000.01, "RUR");
-        expectedDataMap.put(3, money3);
+        Money money1 = new Money(950 + 100.39, "RUR");
+        expectedDataCurrentMap.put(1, money1);
+        Money money2 = new Money(950 + 1000000, "RUR");
+        expectedDataCurrentMap.put(2, money2);
+        Money money3 = new Money(950+1000001.01, "RUR");
+        expectedDataCurrentMap.put(3, money3);
+        Money money4 = new Money(950, "RUR");
+        expectedDataCurrentMap.put(4, money4);
 
 
-        return expectedDataMap;
+        return expectedDataCurrentMap;
     }
 
-    public List<TestPair<Money>> getTestListData(ATM atm){
+    public Map<Integer, Money> getExpectedDataForDebet(ATM atm) {
+        Map<Integer, Money> expectedDataDebetMap = new TreeMap<>();
+        double usdCourse = atm
+                .getCreditScore()
+                .getMoneyWithoutLess()
+                .getCurrency()
+                .getUsdCource();
+
+        Money money1 = new Money(300, "RUR");
+        expectedDataDebetMap.put(1, money1);
+        Money money2 = new Money(300, "RUR");
+        expectedDataDebetMap.put(2, money2);
+        Money money3 = new Money(300 + 2000, "RUR"); //проверяем, что при добавлении суммы>1 млн на дебетовый счет зачисляется 2к
+        expectedDataDebetMap.put(3, money3);
+        Money money4 = new Money(300, "RUR");
+        expectedDataDebetMap.put(4, money4);
+
+
+        return expectedDataDebetMap;
+    }
+
+    public List<TestPair<Money>> getTestListData(ATM atm) {
         List<TestPair<Money>> testPairList = new ArrayList<>();
 
-        Money money1 = new Money(100, "RUR");
-        Money money1Ex = new Money(1100, "RUR");
-        TestPair<Money> pair1 = new TestPair<>(money1, money1Ex);
-        testPairList.add(pair1);
+//        Money money1 = new Money(100, "RUR");
+//        Money money1Ex = new Money(1100, "RUR");
+//        TestPair<Money> pair1 = new TestPair<>(money1, money1Ex);
+//        testPairList.add(pair1);
 
         Money money2 = new Money(0, "RUR");
         Money money2Ex = new Money(1000, "RUR");
@@ -318,39 +328,50 @@ public class AtmDataSupplier {
         return testPairList;
     }
 
-    public List<TestPair<Money>> getTestListDataCurrentScore(ATM atm){
-        List<TestPair<Money>> testPairList = new ArrayList<>();
+    public List<TestPair<Money>> getTestListDataCurrentScore(ATM atm) {
+        List<TestPair<Money>> testCurrentPairList = new ArrayList<>();
 
-        Money money1 = new Money(100.39, "RUR");
-        Money money1Ex = new Money(950+100.39, "RUR");
-        TestPair<Money> pair1 = new TestPair<>(money1, money1Ex);
-        testPairList.add(pair1);
+        Money money1current = new Money(100.39, "RUR");
+        Money money1debet = new Money(0, "RUR");
+        TestPair<Money> pair1 = new TestPair<>(money1current, money1debet);
+        testCurrentPairList.add(pair1);
 
-        Money money2 = new Money(1000000, "RUR");
-        Money money2Ex = new Money(1000000+950, "RUR");
-        TestPair<Money> pair2 = new TestPair<>(money2, money2Ex);
-        testPairList.add(pair2);
+        Money money2current = new Money(1000000, "RUR");
+        Money money2debet = new Money(100, "RUR");
+        TestPair<Money> pair2 = new TestPair<>(money2current, money2debet);
+        testCurrentPairList.add(pair2);
 
-        Money money3 = new Money(1000000.01, "RUR");
-        Money money3Ex = new Money(950+1000000.01, "RUR");
-        TestPair<Money> pair3 = new TestPair<>(money3, money3Ex);
-        testPairList.add(pair3);
-//
-//        Money money9 = new Money(Double.MAX_VALUE, "USD");
-//        Money money9Ex = new Money(1000, "RUR");
-//        TestPair<Money> pair9 = new TestPair<>(money9, money9Ex);
-//        testPairList.add(pair9);
-//
-//        Money money10 = new Money(Double.MAX_VALUE, "RUR");
-//        Money money10Ex = new Money(1000, "RUR");
-//        TestPair<Money> pair10 = new TestPair<>(money10, money10Ex);
-//        testPairList.add(pair10);
-//
+        Money money3current = new Money(1000000.01, "RUR");
+        Money money3debet = new Money(60, "RUR");
+        TestPair<Money> pair3 = new TestPair<>(money3current, money3debet);
+        testCurrentPairList.add(pair3);
 
-        return testPairList;
+        return testCurrentPairList;
     }
 
-    public Money getMoneyFromCredit(ATM atm){
+    public List<TestPair<Money>> getExpectedListDataCurrentScore(ATM atm) {
+        List<TestPair<Money>> testExpectedPairList = new ArrayList<>();
+
+        Money money1current = new Money(950 + 100.39, "RUR");
+        Money money1debet = new Money(0, "RUR");
+        TestPair<Money> pair1 = new TestPair<>(money1current, money1debet);
+        testExpectedPairList.add(pair1);
+
+        Money money2current = new Money(950 + 1000000, "RUR");
+        Money money2debet = new Money(100, "RUR");
+        TestPair<Money> pair2 = new TestPair<>(money2current, money2debet);
+        testExpectedPairList.add(pair2);
+
+        Money money3current = new Money(950 + 1000000.01, "RUR");
+        Money money3debet = new Money(60 + 2000, "RUR");
+        TestPair<Money> pair3 = new TestPair<>(money3current, money3debet);
+        testExpectedPairList.add(pair3);
+
+        return testExpectedPairList;
+    }
+
+
+    public Money getMoneyFromCredit(ATM atm) {
         Money money = null;
 
         Class atmClass = atm.getClass();
@@ -374,7 +395,7 @@ public class AtmDataSupplier {
         return money;
     }
 
-    public Money getMoneyFromCurrent(ATM atm){
+    public Money getMoneyFromCurrent(ATM atm) {
         Money money = null;
 
         Class atmClass = atm.getClass();
@@ -382,7 +403,31 @@ public class AtmDataSupplier {
             Field currentScoreField = atmClass.getDeclaredField("currentScore");
             currentScoreField.setAccessible(true);
 
-            DebetScore debetScore = (DebetScore) currentScoreField.get(atm);
+            CurrentScore currentScore = (CurrentScore) currentScoreField.get(atm);
+            Class scoreClass = currentScore.getClass().getSuperclass();
+
+            Field moneyField = scoreClass.getDeclaredField("balance");
+            moneyField.setAccessible(true);
+
+            money = (Money) moneyField.get(currentScore);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return money;
+    }
+
+    public Money getMoneyFromDebet(ATM atm) {
+        Money money = null;
+
+        Class atmClass = atm.getClass();
+        try {
+            Field debetScoreField = atmClass.getDeclaredField("debetScore");
+            debetScoreField.setAccessible(true);
+
+            DebetScore debetScore = (DebetScore) debetScoreField.get(atm);
             Class scoreClass = debetScore.getClass().getSuperclass();
 
             Field moneyField = scoreClass.getDeclaredField("balance");

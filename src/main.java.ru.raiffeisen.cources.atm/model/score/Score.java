@@ -156,7 +156,7 @@ public abstract class Score implements MoneyInterface {
         if(money.getValue()>0) {
             this.balance.setValue((usdValueThis + usdValueIn)/this.balance.getCurrency().getUsdCource()); //делим на курс, чтобы получить значение "исходной" валюты
         } else {
-            System.out.println("Нельзя внести на счет отрицательную сумму");
+            System.out.println("Нельзя внести на счет отрицательную сумму или 0");
             return;
         }
     }

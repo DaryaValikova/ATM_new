@@ -13,7 +13,7 @@ public class DebetScore extends Score {
 
     @Override
     public void addMoney(Money money){
-        if(creditScore.getMoneyWithoutLess().getValue() < 20000) {
+        if(creditScore.getMoneyWithoutLess().getValue() < -20000) {
             System.out.println("No money on Credit Score!");
             return;
         }
