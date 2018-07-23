@@ -92,7 +92,6 @@ class ATMTestCurrentScore {
         assertEquals(atm, newAtm);
     }
 
-
     @AfterEach
     void cleanData() {
         atmDataSupplier.fillATMcurrentScore(atm);

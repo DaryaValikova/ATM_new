@@ -17,8 +17,7 @@ import static org.mockito.Mockito.when;
 class ATMTestDebetScore {
     private static ATM atm;
     private static final AtmDataSupplierDebet atmDataSupplier = new AtmDataSupplierDebet();
-
-    private static final String DUMP_STR = "{\"currentScore\":{\"debetScore\":{\"creditScore\":{\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"debetScore\":{\"creditScore\":{\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"creditScore\":{\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"operLimit\":0,\"currentOpers\":0,\"operLimitToggl\":false}";
+//    private static final String DUMP_STR = "{\"currentScore\":{\"debetScore\":{\"creditScore\":{\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"debetScore\":{\"creditScore\":{\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"creditScore\":{\"balance\":{\"currency\":{\"name\":\"RUR\",\"usdCource\":65.5},\"value\":1000.0},\"number\":1,\"methodConstraintMap\":{},\"methodCallMap\":{},\"methodConstraintToggl\":false},\"operLimit\":0,\"currentOpers\":0,\"operLimitToggl\":false}";
 
     @BeforeAll
     static void init() {
@@ -38,7 +37,7 @@ class ATMTestDebetScore {
                 testData.keySet()) {
             Money tempMoney = testData.get(key);
 
-                atm.addMoneyToScore(tempMoney, ScoreTypeEnum.DEBET); //добаляем на счет сумму из testData
+            atm.addMoneyToScore(tempMoney, ScoreTypeEnum.DEBET); //добаляем на счет сумму из testData
 
             Money expectedMoney = expectedData.get(key);
             Money newMoney = atmDataSupplier.getMoneyFromDebet(atm);
@@ -58,26 +57,24 @@ class ATMTestDebetScore {
 
     @Test
     void getMoneyFromDebetScore() {
-         Map<Integer, Money> testData = atmDataSupplier.getTestDataForDebetScore();
-         Map<Integer, Money> expectedData = atmDataSupplier.getExpectedDataForGetMoneyFromDebet();
-         for (Integer key :
-                 testData.keySet()) {
-             Money tempMoney = testData.get(key);
+        Map<Integer, Money> testData = atmDataSupplier.getTestDataForDebetScore();
+        Map<Integer, Money> expectedData = atmDataSupplier.getExpectedDataForGetMoneyFromDebet();
+        for (Integer key :
+                testData.keySet()) {
+            Money tempMoney = testData.get(key);
 
-             try {
-                 atm.getMoneyFromScore(tempMoney, ScoreTypeEnum.DEBET); //снимаем со счета сумму из testData
-             } catch (IllegalArgumentException e) { //используем заглушку, если поймали exception
-                 mockCurrentScore(tempMoney, expectedData, key);
-             } finally {
-                 Money expectedMoney = expectedData.get(key);
-                 Money newMoney = atmDataSupplier.getMoneyFromCurrent(atm);
+            try {
+                atm.getMoneyFromScore(tempMoney, ScoreTypeEnum.DEBET); //снимаем со счета сумму из testData
+            } catch (IllegalArgumentException e) { //используем заглушку, если поймали exception
+                mockCurrentScore(tempMoney, expectedData, key);
+            } finally {
+                Money expectedMoney = expectedData.get(key);
+                Money newMoney = atmDataSupplier.getMoneyFromCurrent(atm);
 
-                 assertEquals(expectedMoney.getValue(), newMoney.getValue());
-                 atmDataSupplier.fillATMdebetScore(atm);
-             }
+                assertEquals(expectedMoney.getValue(), newMoney.getValue());
+                atmDataSupplier.fillATMdebetScore(atm);
+            }
 
-         }
-     }
-
-
- }
+        }
+    }
+}
