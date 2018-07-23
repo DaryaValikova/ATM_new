@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class AtmDataSupplierCurrent {
+public class AtmDataSupplierDebet {
     public ATM getStartDataATM() {
         Money moneyCredit =
                 new Money(0, "RUR");
@@ -43,16 +43,37 @@ public class AtmDataSupplierCurrent {
         return new ATM(currentScore, debetScore, creditScore);
     }
 
-    public void fillATMcurrentScore(ATM atm) {
-        Money moneyCurrent = new Money(950, "RUR");
-        setMoneyToCurrentScore(moneyCurrent, atm, "currentScore");
+    public void fillATMdebetScore(ATM atm) {
+//        Money moneyCurrent = new Money(950, "RUR");
+//        setMoneyToCurrentScore(moneyCurrent, atm, "currentScore");
 
-        Money moneyDebet = new Money(300, "RUR");
+        Money moneyDebet = new Money(198, "RUR");
         setMoneyToDebetScore(moneyDebet, atm, "debetScore");
 
-//        Money moneyCredit = new Money(20000, "RUR");
-//        setMoneyToCreditScore(moneyCredit, atm, "creditScore");
+        Money moneyCredit = new Money(-5000, "RUR");
+        setMoneyToCreditScore(moneyCredit, atm, "creditScore");
 
+    }
+
+    private void setMoneyToCreditScore(Money money, ATM atm, String scoreName) {
+        Class atmClass = atm.getClass();
+        try {
+            Field creditScoreField = atmClass.getDeclaredField(scoreName);
+            creditScoreField.setAccessible(true);
+
+            CreditScore creditScore = (CreditScore) creditScoreField.get(atm);
+            Class scoreClass = creditScore.getClass().getSuperclass();
+
+            Field moneyField = scoreClass.getDeclaredField("balance");
+            moneyField.setAccessible(true);
+            moneyField.set(creditScore, money);
+
+            creditScoreField.set(atm, creditScore);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setMoneyToDebetScore(Money money, ATM atm, String scoreName) {
@@ -76,76 +97,55 @@ public class AtmDataSupplierCurrent {
         }
     }
 
-    private void setMoneyToCurrentScore(Money money, ATM atm, String scoreName) {
-        Class atmClass = atm.getClass();
-        try {
-            Field currentScoreField = atmClass.getDeclaredField(scoreName);
-            currentScoreField.setAccessible(true);
-
-            CurrentScore currentScore = (CurrentScore) currentScoreField.get(atm);
-            Class scoreClass = currentScore.getClass().getSuperclass();
-
-            Field moneyField = scoreClass.getDeclaredField("balance");
-            moneyField.setAccessible(true);
-            moneyField.set(currentScore, money);
-
-            currentScoreField.set(atm, currentScore);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public Map<Integer, Money> getTestDataForCurrentScore() {
+    public Map<Integer, Money> getTestDataForDebetScore() {
         Map<Integer, Money> testDataMap = new TreeMap<>();
 
-        Money money1 = new Money(100.39, "RUR");
+        Money money1 = new Money(0.01, "RUR");
         testDataMap.put(1, money1);
-        Money money2 = new Money(1000000, "RUR");
+        Money money2 = new Money(0, "RUR");
         testDataMap.put(2, money2);
-        Money money3 = new Money(1000001.01, "RUR");
+        Money money3 = new Money(99.99, "RUR");
         testDataMap.put(3, money3);
-        Money money4 = new Money(-0.01, "RUR");
+        Money money4 = new Money(-1, "RUR");
         testDataMap.put(4, money4);
-        Money money5 = new Money(950.01, "RUR");
+        Money money5 = new Money(10, "USD");
         testDataMap.put(5, money5);
         return testDataMap;
     }
 
-    public Map<Integer, Money> getExpectedDataForAddMoney(ATM atm) {
-        Map<Integer, Money> expectedDataCurrentMap = new TreeMap<>();
-        double usdCourse = atm
-                .getCreditScore()
-                .getMoneyWithoutLess()
-                .getCurrency()
-                .getUsdCource();
-
-        Money money1 = new Money(950 + 100.39, "RUR");
-        expectedDataCurrentMap.put(1, money1);
-        Money money2 = new Money(950 + 1000000, "RUR");
-        expectedDataCurrentMap.put(2, money2);
-        Money money3 = new Money(950 + 1000001.01, "RUR");
-        expectedDataCurrentMap.put(3, money3);
-        Money money4 = new Money(950, "RUR");
-        expectedDataCurrentMap.put(4, money4);
-        Money money5 = new Money(950 + 950.01, "RUR");
-        expectedDataCurrentMap.put(5, money5);
-
-        return expectedDataCurrentMap;
+    public float getTestDataCourse(int keyTestDataMap) {
+        float currencyCourse = getTestDataForDebetScore().get(keyTestDataMap).getCurrency().getUsdCource();
+        return currencyCourse;
     }
 
-    public Map<Integer, Money> getExpectedDataForGetMoney(ATM atm) {
+    public Map<Integer, Money> getExpectedDataForAddMoneyToDebet() {
+        Map<Integer, Money> expectedDataDebetScore = new TreeMap<>();
+
+        Money money1 = new Money(198 + 0.01, "RUR");
+        expectedDataDebetScore.put(1, money1);
+        Money money2 = new Money(198, "RUR");
+        expectedDataDebetScore.put(2, money2);
+        Money money3 = new Money(198 + 99.99, "RUR");
+        expectedDataDebetScore.put(3, money3);
+        Money money4 = new Money(198, "RUR");
+        expectedDataDebetScore.put(4, money4);
+        Money money5 = new Money(198 + 10 * getTestDataCourse(5), "RUR");
+        expectedDataDebetScore.put(5, money5);
+
+        return expectedDataDebetScore;
+    }
+
+    public Map<Integer, Money> getExpectedDataForGetMoneyFromDebet() {
         Map<Integer, Money> expectedDataMap = new TreeMap<>();
-        Money money1 = new Money(950 - 100.39, "RUR");
+        Money money1 = new Money(198 - 0.01, "RUR");
         expectedDataMap.put(1, money1);
-        Money money2 = new Money(950, "RUR");
+        Money money2 = new Money(198, "RUR");
         expectedDataMap.put(2, money2);
-        Money money3 = new Money(950, "RUR");
+        Money money3 = new Money(198 - 99.99, "RUR");
         expectedDataMap.put(3, money3);
-        Money money4 = new Money(950, "RUR");
+        Money money4 = new Money(198, "RUR");
         expectedDataMap.put(4, money4);
-        Money money5 = new Money(950, "RUR");
+        Money money5 = new Money(198 - 10 * getTestDataCourse(5), "RUR");
         expectedDataMap.put(5, money5);
         return expectedDataMap;
 

@@ -32,7 +32,7 @@ class ATMTestCurrentScore {
     @Test
     void addMoneyToCurrentScore() {  //проверка добавления средств на текущий счет
         Map<Integer, Money> testData = atmDataSupplier.getTestDataForCurrentScore();
-        Map<Integer, Money> expectedDataCurrent = atmDataSupplier.getExpectedDataForCurrent(atm);
+        Map<Integer, Money> expectedDataCurrent = atmDataSupplier.getExpectedDataForAddMoney(atm);
         Map<Integer, Money> expectedDataDebet = atmDataSupplier.getExpectedDataForDebet(atm);
         for (Integer key :
                 testData.keySet()) {

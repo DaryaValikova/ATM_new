@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
-import tests.java.ru.raifeisen.cources.atm.data.AtmDataSupplier;
+import tests.java.ru.raifeisen.cources.atm.data.AtmDataSupplierCredit;
 
 import java.util.stream.Stream;
 
@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ATMTestWithParams {
     private static ATM atm;
-    private static final AtmDataSupplier atmDataSupplier = new AtmDataSupplier();
+    private static final AtmDataSupplierCredit atmDataSupplier = new AtmDataSupplierCredit();
 
     @BeforeAll
     static void init(){
