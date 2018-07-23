@@ -153,8 +153,8 @@ public abstract class Score implements MoneyInterface {
 //            return;
 //        }
 
-        if(money.getValue()>0) {
-            this.balance.setValue((usdValueThis + usdValueIn)/this.balance.getCurrency().getUsdCource()); //делим на курс, чтобы получить значение "исходной" валюты
+        if (money.getValue() > 0) {
+            this.balance.setValue((usdValueThis + usdValueIn) / this.balance.getCurrency().getUsdCource()); //делим на курс, чтобы получить значение "исходной" валюты
         } else {
             System.out.println("Нельзя внести на счет отрицательную сумму или 0");
             return;
@@ -167,6 +167,9 @@ public abstract class Score implements MoneyInterface {
         if (!isMethodAvailableByOperLimit("getMoney")) {
             System.out.println("Method limit is over!");
             return null;
+        }
+        if (balanceLess <= 0) {
+            throw new IllegalArgumentException("Wrong balance less!");
         }
         if (balanceLess > 30000) {
             throw new IllegalArgumentException("Wrong balance less!");

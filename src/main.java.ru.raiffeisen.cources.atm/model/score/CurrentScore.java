@@ -22,7 +22,7 @@ public class CurrentScore extends Score{
 
     @Override
     public Money getMoney(double balanceLess){
-        if(this.getBalance().getValue() - balanceLess <= 0) {
+        if(this.getBalance().getValue() - balanceLess < 0) {
             System.out.println("No money!");
             return null;
         }
