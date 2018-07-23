@@ -108,6 +108,8 @@ public class AtmDataSupplierCurrent {
         testDataMap.put(3, money3);
         Money money4 = new Money(-0.01, "RUR");
         testDataMap.put(4, money4);
+        Money money5 = new Money(950.01, "RUR");
+        testDataMap.put(5, money5);
         return testDataMap;
     }
 
@@ -127,9 +129,26 @@ public class AtmDataSupplierCurrent {
         expectedDataCurrentMap.put(3, money3);
         Money money4 = new Money(950, "RUR");
         expectedDataCurrentMap.put(4, money4);
-
+        Money money5 = new Money(950 + 950.01, "RUR");
+        expectedDataCurrentMap.put(5, money5);
 
         return expectedDataCurrentMap;
+    }
+
+    public Map<Integer, Money> getExpectedDataForGetMoney(ATM atm) {
+        Map<Integer, Money> expectedDataMap = new TreeMap<>();
+        Money money1 = new Money(950 - 100.39, "RUR");
+        expectedDataMap.put(1, money1);
+        Money money2 = new Money(950, "RUR");
+        expectedDataMap.put(2, money2);
+        Money money3 = new Money(950, "RUR");
+        expectedDataMap.put(3, money3);
+        Money money4 = new Money(950, "RUR");
+        expectedDataMap.put(4, money4);
+        Money money5 = new Money(950, "RUR");
+        expectedDataMap.put(5, money5);
+        return expectedDataMap;
+
     }
 
     public Map<Integer, Money> getExpectedDataForDebet(ATM atm) {

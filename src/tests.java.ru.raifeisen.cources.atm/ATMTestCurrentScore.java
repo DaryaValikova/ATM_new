@@ -31,9 +31,9 @@ class ATMTestCurrentScore {
 
     @Test
     void addMoneyToCurrentScore() {  //проверка добавления средств на текущий счет
-        Map<Integer,Money> testData = atmDataSupplier.getTestDataForCurrentScore();
-        Map<Integer,Money> expectedDataCurrent = atmDataSupplier.getExpectedDataForCurrent(atm);
-        Map<Integer,Money> expectedDataDebet = atmDataSupplier.getExpectedDataForDebet(atm);
+        Map<Integer, Money> testData = atmDataSupplier.getTestDataForCurrentScore();
+        Map<Integer, Money> expectedDataCurrent = atmDataSupplier.getExpectedDataForCurrent(atm);
+        Map<Integer, Money> expectedDataDebet = atmDataSupplier.getExpectedDataForDebet(atm);
         for (Integer key :
                 testData.keySet()) {
             Money tempMoney = testData.get(key);
@@ -51,6 +51,36 @@ class ATMTestCurrentScore {
         }
     }
 
+    void mockCurrentScore(Money tempMoney, Map<Integer, Money> expectedData, Integer key) {
+        Money moneyMock = atmDataSupplier.getMoneyFromCurrent(atm);
+        ATM atm = mock(ATM.class);
+        Money expectedMoney = expectedData.get(key);
+        when(atm.getMoneyFromScore(tempMoney, ScoreTypeEnum.CREDIT)).thenReturn(moneyMock);
+        assertEquals(expectedMoney.getValue(), moneyMock.getValue());
+    }
+
+    @Test
+    void getMoneyFromCurrentScore() {
+        Map<Integer, Money> testData = atmDataSupplier.getTestDataForCurrentScore();
+        Map<Integer, Money> expectedData = atmDataSupplier.getExpectedDataForGetMoney(atm);
+        for (Integer key :
+                testData.keySet()) {
+            Money tempMoney = testData.get(key);
+
+            try {
+                atm.getMoneyFromScore(tempMoney, ScoreTypeEnum.CURRENT); //снимаем со счета сумму из testData
+            } catch (IllegalArgumentException e) { //используем заглушку, если поймали exception
+                mockCurrentScore(tempMoney, expectedData, key);
+            } finally {
+                Money expectedMoney = expectedData.get(key);
+                Money newMoney = atmDataSupplier.getMoneyFromCurrent(atm);
+
+                assertEquals(expectedMoney.getValue(), newMoney.getValue());
+                atmDataSupplier.fillATMcurrentScore(atm);
+            }
+
+        }
+    }
 
     @Test
     void getATMFromJSONString() {

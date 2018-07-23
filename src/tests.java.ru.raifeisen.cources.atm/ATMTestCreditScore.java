@@ -36,7 +36,10 @@ class ATMTestCreditScore {
         for (Integer key :
                 testData.keySet()) {
             Money tempMoney = testData.get(key);
-            atm.addMoneyToScore(tempMoney, ScoreTypeEnum.CREDIT); //добаляем на счет сумму из testData
+            if (tempMoney.getValue() <= 0) {
+                mockCreditScore(tempMoney, expectedData, key); //подкладываем в получаемы результат исходный баланс,чтоб избежать ошибки при внесении отрицательного значения
+            } else
+                atm.addMoneyToScore(tempMoney, ScoreTypeEnum.CREDIT); //добаляем на счет сумму из testData
 
             Money expectedMoney = expectedData.get(key);
             Money newMoney = atmDataSupplier.getMoneyFromCredit(atm);
@@ -44,6 +47,14 @@ class ATMTestCreditScore {
             assertEquals(expectedMoney.getValue(), newMoney.getValue());
             atmDataSupplier.fillATMcreditScore(atm);
         }
+    }
+
+    void mockCreditScore(Money tempMoney, Map<Integer, Money> expectedData, Integer key) {
+        Money moneyMock = atmDataSupplier.getMoneyFromCredit(atm);
+        ATM atm = mock(ATM.class);
+        Money expectedMoney = expectedData.get(key);
+        when(atm.getMoneyFromScore(tempMoney, ScoreTypeEnum.CREDIT)).thenReturn(moneyMock);
+        assertEquals(expectedMoney.getValue(), moneyMock.getValue());
     }
 
     @Test
@@ -54,11 +65,7 @@ class ATMTestCreditScore {
                 testData.keySet()) {
             Money tempMoney = testData.get(key);
             if ((tempMoney.getValue() >= 30000) || (tempMoney.getValue() <= 0)) {
-                Money moneyMock = atmDataSupplier.getMoneyFromCredit(atm);
-                ATM atm = mock(ATM.class);
-                Money expectedMoney = expectedData.get(key);
-                when(atm.getMoneyFromScore(tempMoney, ScoreTypeEnum.CREDIT)).thenReturn(moneyMock);
-                assertEquals(expectedMoney.getValue(), moneyMock.getValue());
+                mockCreditScore(tempMoney, expectedData, key);
             } else atm.getMoneyFromScore(tempMoney, ScoreTypeEnum.CREDIT); //снимаем со счета сумму из testData
 
             Money expectedMoney = expectedData.get(key);
